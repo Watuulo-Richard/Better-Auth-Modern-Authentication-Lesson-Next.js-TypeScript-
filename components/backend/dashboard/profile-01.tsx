@@ -1,29 +1,41 @@
-import type React from "react"
-import { LogOut, MoveUpRight, Settings, CreditCard, FileText } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
+import type React from "react";
+import {
+  LogOut,
+  MoveUpRight,
+  Settings,
+  CreditCard,
+  FileText,
+  Loader2Icon,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { signOut } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface MenuItem {
-  label: string
-  value?: string
-  href: string
-  icon?: React.ReactNode
-  external?: boolean
+  label: string;
+  value?: string;
+  href: string;
+  icon?: React.ReactNode;
+  external?: boolean;
 }
 
 interface Profile01Props {
-  name: string
-  role: string
-  avatar: string
-  subscription?: string
+  name: string;
+  role: string;
+  avatar: string;
+  subscription?: string;
 }
 
 const defaultProfile = {
   name: "Eugene An",
   role: "Prompt Engineer",
-  avatar: "https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-02-albo9B0tWOSLXCVZh9rX9KFxXIVWMr.png",
+  avatar:
+    "https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-02-albo9B0tWOSLXCVZh9rX9KFxXIVWMr.png",
   subscription: "Free Trial",
-} satisfies Required<Profile01Props>
+} satisfies Required<Profile01Props>;
 
 export default function Profile01({
   name = defaultProfile.name,
@@ -50,7 +62,25 @@ export default function Profile01({
       icon: <FileText className="w-4 h-4" />,
       external: true,
     },
-  ]
+  ];
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
+  async function handleLogOut() {
+    try {
+      setLoading(true);
+      await signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success("logged out successfully...");
+            router.push("/login");
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error("failed to log out...");
+    }
+  }
 
   return (
     <div className="w-full max-w-sm mx-auto">
@@ -84,27 +114,49 @@ export default function Profile01({
               >
                 <div className="flex items-center gap-2">
                   {item.icon}
-                  <span className="text-sm font-medium text-foreground">{item.label}</span>
+                  <span className="text-sm font-medium text-foreground">
+                    {item.label}
+                  </span>
                 </div>
                 <div className="flex items-center">
-                  {item.value && <span className="text-sm text-muted-foreground mr-2">{item.value}</span>}
+                  {item.value && (
+                    <span className="text-sm text-muted-foreground mr-2">
+                      {item.value}
+                    </span>
+                  )}
                   {item.external && <MoveUpRight className="w-4 h-4" />}
                 </div>
               </Link>
             ))}
-
-            <button
-              type="button"
-              className="w-full flex items-center justify-between p-2 hover:bg-muted rounded-lg transition-colors duration-200"
-            >
-              <div className="flex items-center gap-2">
-                <LogOut className="w-4 h-4" />
-                <span className="text-sm font-medium text-foreground">Logout</span>
-              </div>
-            </button>
+            {loading ? (
+              <button
+                type="button"
+                className="w-full flex items-center justify-between p-2 hover:bg-muted rounded-lg transition-colors duration-200 cursor-not-allowed"
+              >
+                <div className="flex items-center gap-2">
+                  <Loader2Icon className="w-4 h-4 animate-spin" />
+                  <span className="text-sm font-medium text-foreground">
+                    Logging out
+                  </span>
+                </div>
+              </button>
+            ) : (
+              <button
+                onClick={() => handleLogOut()}
+                type="button"
+                className="w-full flex items-center justify-between p-2 hover:bg-muted rounded-lg transition-colors duration-200 cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <LogOut className="w-4 h-4" />
+                  <span className="text-sm font-medium text-foreground">
+                    Logout
+                  </span>
+                </div>
+              </button>
+            )}
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,14 +1,16 @@
-import { cn } from "@/lib/utils";
+import Image from 'next/image'
+import Link from 'next/link'
 
-export default function Logo({ className }: { className?: string }) {
-  return (
-    <h1
-      className={cn(
-        "scroll-m-20 text-center text-xl md:text-2xl font-extrabold tracking-tight text-balance flex items-center gap-2",
-        className
-      )}
-    >
-      Desishub <span className="hidden md:block">Online</span>
-    </h1>
-  );
+export default function Logo() {
+   return (
+      <Link href="/" className="flex items-center">
+         <Image
+            src={'/logo.png'}
+            alt="Logo"
+            width={128}
+            height={128}
+            priority
+         />
+      </Link>
+   )
 }
