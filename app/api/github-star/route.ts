@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
    try {
-      const res = await fetch('https://api.github.com/repos/devAaus/better-auth', {
+      const res = await fetch('https://api.github.com/repos/Watuulo-Richard/Better-Auth-Modern-Authentication-Lesson-Next.js-TypeScript-', {
          headers: {
             Authorization: process.env.GITHUB_TOKEN ? `Bearer ${process.env.GITHUB_TOKEN}` : '',
             Accept: 'application/vnd.github+json',
