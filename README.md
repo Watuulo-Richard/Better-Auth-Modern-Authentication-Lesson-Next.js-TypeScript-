@@ -1,7 +1,3 @@
-Here is a **clean, professional, production-ready README.md** for your Better Auth + Next.js + Prisma (PostgreSQL) repository.
-
----
-
 # Better Auth Lesson – Next.js + Prisma + PostgreSQL
 
 A clean and beginner-friendly authentication project built with **Next.js**, **TypeScript**, **Better Auth**, **Prisma**, and **PostgreSQL**.
@@ -26,7 +22,7 @@ This repository is designed as a complete learning guide for building secure, sc
 * **TypeScript**
 * **Better Auth**
 * **Prisma ORM**
-* **PostgreSQL**
+* **PostgreSQL (via Prisma Postgres)**
 * **Tailwind CSS**
 
 ---
@@ -44,6 +40,8 @@ better-auth-lesson/
 │   │   ├── auth/
 │   │   │   ├── server.ts
 │   │   │   ├── client.ts
+│   │   ├── generated/
+│   │   │   └── prisma/        ← Generated Prisma Client lives here
 │   ├── components/
 │── prisma/
 │   ├── schema.prisma
@@ -58,7 +56,7 @@ better-auth-lesson/
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/better-auth-lesson.git
+git clone https://github.com/Watuulo-Richard/better-auth-lesson.git
 cd better-auth-lesson
 ```
 
@@ -68,34 +66,216 @@ cd better-auth-lesson
 npm install
 ```
 
+---
+
 ### 3️⃣ Setup Environment Variables
 
-Create a `.env` file:
-
-```
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
-BETTER_AUTH_SECRET="your-secret-key"
-```
-
-### 4️⃣ Setup Prisma
-
-Run migrations:
+Copy the example env file and rename it:
 
 ```bash
-npx prisma migrate dev
+cp .env.example .env
 ```
 
-Generate Prisma client:
+Then open your `.env` file and fill in the values below.
+
+---
+
+#### 🗄️ DATABASE_URL — Get Your Prisma Postgres Connection String
+
+This connects your app to your database. Follow these steps:
+
+1. Go to [https://console.prisma.io](https://console.prisma.io) and sign in (or create a free account)
+2. Click **"New Project"** and give it a name
+3. Choose **"Prisma Postgres"** as your database *(you get 5 free databases)*
+4. Once created, open your project dashboard
+5. Click **"Connect"** and copy the connection string
+
+Your URL will look like this:
+
+```
+prisma+postgres://accelerate.prisma-data.net/?api_key=YOUR_API_KEY_HERE
+```
+
+Paste it into your `.env` file:
+
+```env
+DATABASE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=YOUR_API_KEY_HERE"
+```
+
+---
+
+#### 🔑 BETTER_AUTH_SECRET — Generate a Secure Secret Key
+
+This is a secret key used to sign and verify authentication tokens. Keep it private — never share it or push it to GitHub.
+
+Pick **one** of these ways to generate it:
+
+**Option 1 — Terminal (openssl):**
+```bash
+openssl rand -base64 32
+```
+
+**Option 2 — Terminal (Node.js):**
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+**Option 3 — Browser:**
+Visit [https://generate-secret.vercel.app/32](https://generate-secret.vercel.app/32) and copy the result.
+
+Paste the generated value into your `.env` file:
+
+```env
+BETTER_AUTH_SECRET="paste-your-generated-secret-here"
+```
+
+---
+
+#### 🌐 BETTER_AUTH_URL — Your App's Base URL
+
+```env
+# During development:
+BETTER_AUTH_URL="http://localhost:3000"
+
+# After deploying to Vercel, change it to your live URL:
+# BETTER_AUTH_URL="https://your-app.vercel.app"
+```
+
+---
+
+#### ✅ Your Final `.env` Should Look Like This
+
+```env
+DATABASE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=YOUR_API_KEY_HERE"
+BETTER_AUTH_SECRET="paste-your-generated-secret-here"
+BETTER_AUTH_URL="http://localhost:3000"
+```
+
+> ⚠️ **Never commit your `.env` file to GitHub.** Make sure `.env` is listed in your `.gitignore`.
+
+---
+
+### 4️⃣ Setup Your Prisma Schema
+
+Open `prisma/schema.prisma` and replace its contents with the following schema. This includes all the models needed for Better Auth to work:
+
+```prisma
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String    @id @default(cuid())
+  firstName        String
+  lastName         String
+  name             String
+  phone            String?
+  role             UserRole  @default(USER)
+  email            String
+  emailVerified    Boolean
+  phoneVerified    Boolean   @default(false)
+  physicalVerified Boolean   @default(false)
+  image            String?
+  createdAt        DateTime
+  updatedAt        DateTime
+  sessions         Session[]
+  accounts         Account[]
+
+  @@unique([email])
+  @@unique([phone])
+  @@map("user")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  expiresAt  DateTime
+  token      String
+  rememberMe Boolean  @default(false)
+  createdAt  DateTime
+  updatedAt  DateTime
+  ipAddress  String?
+  userAgent  String?
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+```
+
+---
+
+### 5️⃣ Push Schema to Database & Generate Prisma Client
+
+Push your schema to the database (this creates your tables):
+
+```bash
+npx prisma db push
+```
+
+> ⚠️ **Note:** Use `prisma db push` instead of `prisma migrate dev` — it works correctly with Prisma Postgres.
+
+Then generate the Prisma client:
 
 ```bash
 npx prisma generate
 ```
 
-### 5️⃣ Start the Dev Server
+*(Optional)* Open Prisma Studio to view your data in a browser UI:
+
+```bash
+npx prisma studio
+```
+
+---
+
+### 6️⃣ Start the Dev Server
 
 ```bash
 npm run dev
 ```
+
+Your app will be running at [http://localhost:3000](http://localhost:3000) 🚀
 
 ---
 
@@ -108,20 +288,6 @@ This project demonstrates:
 * How sessions and cookies are managed
 * How to protect dashboard routes
 * How to access the current user on server and client components
-
----
-
-## 🧩 Prisma Schema Example
-
-```prisma
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-```
 
 ---
 
@@ -150,14 +316,4 @@ Feel free to open issues, submit pull requests, or extend the project with:
 
 ## 📄 License
 
-MIT License © 2025
-
----
-
-If you want, I can also generate:
-✅ Complete `schema.prisma`
-✅ Auth UI pages (login/register)
-✅ Auth logic files
-✅ Protected route middleware
-
-Just say **“generate files”**!
+MIT License © 2026
