@@ -26,7 +26,7 @@ export default function HeroSection() {
             <FadeInView delay={0.6} className="flex flex-wrap items-center justify-center gap-4">
                <Button asChild size="lg">
                   <Link
-                     href="https://github.com/devAaus/better-auth"
+                     href="https://github.com/Watuulo-Richard/Better-Auth-Modern-Authentication-Lesson-Next.js-TypeScript-"
                      target="_blank"
                      className="flex items-center gap-2"
                   >
