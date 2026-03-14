@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   title: "Better Auth Starter",
   description: "Next.js + Better Auth + Shadcn UI + Tailwind CSS",
   icons: {
-    icon: '/logo.png'
-  }
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -24,16 +24,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={onest.className}>
-        <body
-        className={` antialiased`}
-      >
+      <body className={`${onest.className} antialiased`}>
         <NextTopLoader showSpinner={false} height={6} color="#000000" />
         <Toaster richColors position="top-right" />
-        <main className="min-h-screen">
-          {children}
-        </main>
-      </body>
+        <main className="min-h-screen">{children}</main>
       </body>
     </html>
   );

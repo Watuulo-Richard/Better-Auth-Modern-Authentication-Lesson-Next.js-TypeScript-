@@ -85,3 +85,39 @@ model Verification {
  
   @@map("verification")
 }
+
+// Tracks unique visitors by their hashed IP (deduplication)
+model PageView {
+  id        String   @id @default(cuid())
+  ipHash    String   @unique
+  count     Int      @default(1)
+  lastVisit DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  @@index([ipHash])
+  @@map("page_views")
+}
+
+// Stores every visit log with IP + device info
+model VisitorLog {
+  id         String   @id @default(cuid())
+  ipAddress  String
+  device     String   // e.g. "Mobile", "Desktop", "Tablet"
+  os         String   // e.g. "Windows", "Android", "iOS"
+  browser    String   // e.g. "Chrome", "Firefox", "Safari"
+  userAgent  String   // full raw user-agent string
+  visitedAt  DateTime @default(now())
+
+  @@index([ipAddress])
+  @@index([visitedAt])
+  @@map("visitor_logs")
+}
+
+// Stores total site statistics
+model SiteStats {
+  id         String   @id @default("site-stats")
+  totalViews Int      @default(0)
+  updatedAt  DateTime @updatedAt
+
+  @@map("site_stats")
+}

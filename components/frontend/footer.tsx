@@ -1,4 +1,4 @@
-import React from 'react'
+import { ViewCounter } from "./view-counter";
 
 export default function Footer() {
    return (
@@ -11,6 +11,9 @@ export default function Footer() {
          <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row">
             <p className="text-center text-sm leading-loose text-muted-foreground">
                &copy; {new Date().getFullYear()} AuthSystem. All rights reserved.
+            </p>
+            <p className="text-center text-sm text-muted-foreground">
+               You are the <ViewCounter />
             </p>
          </div>
       </footer>
