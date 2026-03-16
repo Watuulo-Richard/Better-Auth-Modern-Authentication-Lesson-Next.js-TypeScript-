@@ -1,7 +1,8 @@
-import { Calendar, CreditCard, Wallet } from "lucide-react"
-import List01 from "./list-01"
-import List02 from "./list-02"
-import List03 from "./list-03"
+import { Wallet } from "lucide-react"
+
+import { ChartBarMultiple } from "../charts/bar-chart"
+import { ChartBarInteractive } from "../charts/bar-chart-interactive"
+import { ChartPieInteractive } from "../charts/pie-chart"
 
 export default function Content() {
   return (
@@ -13,26 +14,22 @@ export default function Content() {
             Accounts
           </h2>
           <div className="flex-1">
-            <List01 className="h-full" />
+            <ChartPieInteractive />
           </div>
         </div>
         <div className="bg-card rounded-xl p-6 flex flex-col border border-border">
-          <h2 className="text-lg font-bold text-card-foreground mb-4 text-left flex items-center gap-2">
+          {/* <h2 className="text-lg font-bold text-card-foreground mb-4 text-left flex items-center gap-2">
             <CreditCard className="w-3.5 h-3.5 text-foreground" />
             Recent Transactions
-          </h2>
+          </h2> */}
           <div className="flex-1">
-            <List02 className="h-full" />
+            <ChartBarMultiple />
           </div>
         </div>
       </div>
 
-      <div className="bg-card rounded-xl p-6 flex flex-col items-start justify-start border border-border">
-        <h2 className="text-lg font-bold text-card-foreground mb-4 text-left flex items-center gap-2">
-          <Calendar className="w-3.5 h-3.5 text-foreground" />
-          Upcoming Events
-        </h2>
-        <List03 />
+      <div className="bg-card rounded-xl p-6 border border-border">
+        <ChartBarInteractive />
       </div>
     </div>
   )

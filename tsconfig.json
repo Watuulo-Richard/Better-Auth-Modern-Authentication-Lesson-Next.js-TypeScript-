@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "#site/content": ["./.velite"],
+      "@/.velite": ["./.velite/index"]
     }
   },
   "include": [

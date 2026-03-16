@@ -74,26 +74,26 @@ export default function Sidebar() {
         <div className="flex h-full flex-col">
           {/* Logo */}
           <Link
-            href="https://kokonutui.com/"
+            href="/dashboard"
             target="_blank"
             rel="noopener noreferrer"
             className="flex h-16 items-center gap-3 border-b border-border px-6"
           >
             <Image
-              src="https://kokonutui.com/logo.svg"
-              alt="KokonutUI"
+              src="/logo.png"
+              alt="AuthUI-kit"
               width={32}
               height={32}
               className="hidden flex-shrink-0 dark:block"
             />
             <Image
-              src="https://kokonutui.com/logo-black.svg"
-              alt="KokonutUI"
+              src="/logo.png"
+              alt="AuthUI-kit"
               width={32}
               height={32}
               className="block flex-shrink-0 dark:hidden"
             />
-            <span className="text-lg font-semibold text-foreground hover:cursor-pointer">KokonutUI</span>
+            <span className="text-lg font-semibold text-foreground hover:cursor-pointer">AuthUI-Kit</span>
           </Link>
 
           {/* Navigation groups */}
@@ -112,7 +112,7 @@ export default function Sidebar() {
                     Analytics
                   </NavItem>
                   <NavItem href="#" icon={Building2} onClick={handleNavigation}>
-                    Organization
+                    Visitors
                   </NavItem>
                   <NavItem href="#" icon={Folder} onClick={handleNavigation}>
                     Projects

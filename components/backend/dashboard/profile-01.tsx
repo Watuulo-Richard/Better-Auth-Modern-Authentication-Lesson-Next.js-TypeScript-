@@ -13,6 +13,7 @@ import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { User } from "@/lib/auth";
 
 interface MenuItem {
   label: string;
@@ -22,47 +23,41 @@ interface MenuItem {
   external?: boolean;
 }
 
-interface Profile01Props {
-  name: string;
-  role: string;
-  avatar: string;
-  subscription?: string;
+interface ProfileProps {
+  user: User
 }
 
-const defaultProfile = {
-  name: "Eugene An",
-  role: "Prompt Engineer",
-  avatar:
-    "https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-02-albo9B0tWOSLXCVZh9rX9KFxXIVWMr.png",
-  subscription: "Free Trial",
-} satisfies Required<Profile01Props>;
+// const defaultProfile = {
+//   name: "Eugene An",
+//   role: "Prompt Engineer",
+//   avatar:
+//     "https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-02-albo9B0tWOSLXCVZh9rX9KFxXIVWMr.png",
+//   subscription: "Free Trial",
+// } satisfies Required<ProfileProps>;
 
 export default function Profile01({
-  name = defaultProfile.name,
-  role = defaultProfile.role,
-  avatar = defaultProfile.avatar,
-  subscription = defaultProfile.subscription,
-}: Partial<Profile01Props> = defaultProfile) {
-  const menuItems: MenuItem[] = [
-    {
-      label: "Subscription",
-      value: subscription,
-      href: "#",
-      icon: <CreditCard className="w-4 h-4" />,
-      external: false,
-    },
-    {
-      label: "Settings",
-      href: "#",
-      icon: <Settings className="w-4 h-4" />,
-    },
-    {
-      label: "Terms & Policies",
-      href: "#",
-      icon: <FileText className="w-4 h-4" />,
-      external: true,
-    },
-  ];
+  user
+}: Partial<ProfileProps>) {
+  // const menuItems: MenuItem[] = [
+  //   {
+  //     label: "Subscription",
+  //     value: subscription,
+  //     href: "#",
+  //     icon: <CreditCard className="w-4 h-4" />,
+  //     external: false,
+  //   },
+  //   {
+  //     label: "Settings",
+  //     href: "#",
+  //     icon: <Settings className="w-4 h-4" />,
+  //   },
+  //   {
+  //     label: "Terms & Policies",
+  //     href: "#",
+  //     icon: <FileText className="w-4 h-4" />,
+  //     external: true,
+  //   },
+  // ];
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   async function handleLogOut() {
@@ -89,8 +84,8 @@ export default function Profile01({
           <div className="flex items-center gap-4 mb-8">
             <div className="relative shrink-0">
               <Image
-                src={avatar || "/placeholder.svg"}
-                alt={name}
+                src={user?.image || "/placeholder.svg"}
+                alt={user?.name ?? "Watuulo-Richard"}
                 width={72}
                 height={72}
                 className="rounded-full ring-4 ring-background object-cover"
@@ -100,13 +95,13 @@ export default function Profile01({
 
             {/* Profile Info */}
             <div className="flex-1">
-              <h2 className="text-xl font-semibold text-foreground">{name}</h2>
-              <p className="text-muted-foreground">{role}</p>
+              <h2 className="text-xl font-semibold text-foreground">{user?.name ?? "Watuulo-Richard"}</h2>
+              <p className="text-muted-foreground">{user?.role ?? "USER"}</p>
             </div>
           </div>
           <div className="h-px bg-border my-6" />
           <div className="space-y-2">
-            {menuItems.map((item) => (
+            {/* {menuItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
@@ -127,7 +122,7 @@ export default function Profile01({
                   {item.external && <MoveUpRight className="w-4 h-4" />}
                 </div>
               </Link>
-            ))}
+            ))} */}
             {loading ? (
               <button
                 type="button"

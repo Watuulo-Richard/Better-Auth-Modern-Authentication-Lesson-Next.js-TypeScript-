@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { Bell, ChevronRight } from 'lucide-react';
 import Profile01 from './profile-01';
 import Link from 'next/link';
+import { User } from '@/lib/auth';
 // import { ThemeToggle } from "../theme-toggle"
 
 interface BreadcrumbItem {
@@ -16,9 +17,9 @@ interface BreadcrumbItem {
   href?: string;
 }
 
-export default function TopNav() {
+export default function TopNav({user}:{user:User}) {
   const breadcrumbs: BreadcrumbItem[] = [
-    { label: 'kokonutUI', href: '#' },
+    { label: 'authUI-kit', href: '#' },
     { label: 'dashboard', href: '#' },
   ];
 
@@ -58,8 +59,8 @@ export default function TopNav() {
         <DropdownMenu>
           <DropdownMenuTrigger className="focus:outline-none">
             <Image
-              src="https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-01-n0x8HFv8EUetf9z6ht0wScJKoTHqf8.png"
-              alt="User avatar"
+              src={user.image ?? "https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-01-n0x8HFv8EUetf9z6ht0wScJKoTHqf8.png"}
+              alt={user.name}
               width={28}
               height={28}
               className="rounded-full ring-2 ring-border sm:w-8 sm:h-8 cursor-pointer"
@@ -70,7 +71,7 @@ export default function TopNav() {
             sideOffset={8}
             className="w-[280px] sm:w-80 bg-popover border-border rounded-lg shadow-lg"
           >
-            <Profile01 avatar="https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-01-n0x8HFv8EUetf9z6ht0wScJKoTHqf8.png" />
+            <Profile01 user={user} />
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
